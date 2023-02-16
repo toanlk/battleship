@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-import os
-import json
-import random, pprint
+import os, sys
+import random, pprint, json
+
+SHIP_TYPE = {
+        "CV": 5, # Carrier
+        "BB": 4, # Battleship
+        "OR": 4, # Oil rig
+        "CA": 3, # Cruiser
+        "DD": 2, # Destroyer
+    }
 
 inviteRequest =  {
     "boardWidth": 20,
@@ -30,24 +37,18 @@ inviteRequest =  {
         ]
     }
 
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-def draw_map_with_ship(size_x, size_y, ship_size, ship_x, ship_y, direction):
+def draw_map_with_ship(size_x, size_y, ships):
     # Initialize the map
     map = [['.' for x in range(size_y)] for y in range(size_x)]
-    if direction == "horizontal":
-        # Place ship horizontally
-        if ship_x + ship_size <= size_y:
-            for i in range(ship_x, ship_x + ship_size):
-                map[ship_y][i] = '*'
-    else:
-        # Place ship vertically
-        if ship_y + ship_size <= size_x:
-            for i in range(ship_y, ship_y + ship_size):
-                map[i][ship_x] = '*'
+
+    for ship in ships:
+        for pos in ship['coordinates']:
+            try:
+                map[pos[0]][pos[1]] = 'x'
+            except:
+                pprint.pprint(pos)
+                pass
+            
 
     # Draw the map
     for i in range(size_x):
@@ -55,19 +56,21 @@ def draw_map_with_ship(size_x, size_y, ship_size, ship_x, ship_y, direction):
             print(map[i][j], end=" ")
         print()
 
-def generate_position(size, all_position):
+def generate_position(ship_type, all_position):
     positions = []
     is_exist = False
-    positions = generate_position_randomly(size)
 
-    # do
-    # {
-    #     positions = GeneratePositionRandomly(size);
-    #     IsExist = positions.Where(AP => AllPosition.Exists(ShipPos => ShipPos.x == AP.x && ShipPos.y == AP.y)).Any();
-    # }
-    # while (IsExist);
-
-    # AllPosition.AddRange(positions);
+    size = SHIP_TYPE.get(ship_type, [])
+    
+    while not is_exist:
+        positions = generate_position_randomly(size)
+        print(ship_type)
+        print(positions)
+        for pos in positions:
+            if pos in all_position:
+                is_exist = False
+                break
+        is_exist = True
 
     return positions
 
@@ -78,8 +81,8 @@ def generate_position_randomly(size):
     # pick row and column
     direction = random.randint(1, size)
                                             
-    row = random.randint(1, 11)
-    col = random.randint(1, 11)
+    row = random.randint(0, 7)
+    col = random.randint(0, 19)
     if (direction % 2 != 0) :
         # left first, then right
         if (row - size > 0):
@@ -100,34 +103,20 @@ def generate_position_randomly(size):
     return positions
 
 def get_ships(request_ships):
-
+    positions = []
     all_position = []
 
-    ships = {
-        "CV": 5,
-        "BB": 4,
-        "OR": 4,
-        "CA": 3,
-        "DD": 2,
-    }
-
     for ship in request_ships:
-        size = ships.get(ship['type'], [])
-        position = generate_position(size, all_position)
-        all_position.append(position)
+        position = generate_position(ship['type'], all_position)
+        positions.append({'coordinates': position, 'type': ship['type']})
+        all_position.extend(position)
 
-    return all_position
+    return positions
 
 # -----------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     os.system('clear')
 
-    # Destroyer: 2x1
-    # Cruiser: 3x1
-    # Carrier: 5x1
-    # Oil rig: 2x2
-    # Battleship: 4x1
-
-    # draw_map_with_ship(inviteRequest['boardHeight'], inviteRequest['boardWidth'], 5, 5, 5, 'horizontal')
     positions = get_ships(inviteRequest['ships'])
-    pprint.pprint(positions)
+
+    draw_map_with_ship(inviteRequest['boardHeight'], inviteRequest['boardWidth'], positions)
