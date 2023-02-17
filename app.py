@@ -4,6 +4,8 @@ import os, sys
 from flask import Flask
 from flask import request
 
+from module.position import Position
+
 APP_PATH = os.getcwd()
 
 app = Flask(__name__)
@@ -12,7 +14,7 @@ app = Flask(__name__)
 @app.route("/game-over", methods=["POST"])
 def game_over():
     data = request.json
-    return { 'sucess': True }
+    return { 'success': True }
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/notify", methods=["POST"])
@@ -29,14 +31,17 @@ def shoot():
 # -----------------------------------------------------------------------------------------------------
 @app.route("/place-ships", methods=["POST"])
 def place_ships():
-    data = request.json
+    # html = open(APP_PATH + '/cache/data.html', 'r').read()
+    pos = Position(inviteRequest['ships'])
+    positions = pos.generate()
     return data
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/invite", methods=["POST"])
 def invite():
     data = request.json
-    return data
+    print(data)
+    return { 'success': True }
 
 @app.route("/")
 def index():
