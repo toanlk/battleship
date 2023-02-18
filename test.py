@@ -2,6 +2,7 @@
 import os, sys
 import random, pprint, json
 
+from module.bot import Bot
 from module.map import Map
 from module.position import Position
 
@@ -53,5 +54,12 @@ if __name__ == "__main__":
     positions = pos.generate()
     # pprint.pprint(positions)
 
+    bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
+
+    shot_map = []
+    for i in range(0, 150):
+        fire_position = bot.guess_random(shot_map)
+        shot_map.append(fire_position)
+
     map = Map(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
-    map.draw(positions)
+    map.draw(positions, shot_map)
