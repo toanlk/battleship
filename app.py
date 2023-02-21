@@ -84,6 +84,7 @@ def place_ships():
 
     pos = Position(json_object['ships'])
     positions = pos.generate()
+    pprint.pprint(positions)
 
     return {"ships": positions}
 
