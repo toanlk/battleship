@@ -109,9 +109,15 @@ def index():
 # -----------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        # os.system('clear')
+        if os.name == 'nt':
+            os.system('cls')
+            app.run(debug=True)
+            app.run(host="10.10.2.58", port=5000, debug=False, threaded=True)
 
-        app.run(debug=True)
-        app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+        else:
+            os.system('clear')
+
+            app.run(debug=True)
+            app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
     except Exception as e:
         pass
