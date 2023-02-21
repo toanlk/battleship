@@ -9,8 +9,8 @@ class Bot:
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map, length=None):
         while True:
-            row = random.randint(0, 7)
-            col = random.randint(0, 19)
+            row = random.randint(0, 19)
+            col = random.randint(0, 7)
             guess_row, guess_col = row, col
             # if length:
             #     if (guess_row + guess_col) % length != 0:
