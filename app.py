@@ -79,7 +79,7 @@ def place_ships():
     pos = Position(json_object['ships'])
     positions = pos.generate()
 
-    return positions
+    return {"ships": positions}
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/invite", methods=["POST"])
