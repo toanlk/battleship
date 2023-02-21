@@ -53,20 +53,20 @@ class Position:
         # odd for horizontal and even for vertical, pick row and column
         direction = random.randint(1, size)
 
-        row = random.randint(0, 7)
-        col = random.randint(0, 19)
+        row = random.randint(0, 19)
+        col = random.randint(0, 7)
 
         if ship_type == "CV":
-            row = random.randint(1, 6) 
-            col = random.randint(1, 19)
+            row = random.randint(1, 19) 
+            col = random.randint(1, 6)
         # row = 7
         # col = 19
         # direction = 1 # fixed direction
         if ship_type == "OR":
             if (direction % 2 != 0) :
-                col = random.randint(1, 18)
+                col = random.randint(1, 6)
             else:
-                row = random.randint(1, 6)
+                row = random.randint(1, 18)
 
         positions = self.get_simple_position(direction, row, col, size)
 
