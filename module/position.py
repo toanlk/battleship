@@ -61,7 +61,7 @@ class Position:
             col = random.randint(0, 6)                                       
         # row = 6
         # col = 11
-        direction = 0
+        # direction = 0
         positions = self.get_simple_position(direction, row, col, size)
 
         if ship_type == "OR":
