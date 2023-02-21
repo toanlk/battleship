@@ -13,14 +13,14 @@ class Map:
         for ship in ships:
             for pos in ship['coordinates']:
                 try:
-                    map[pos[1]][pos[0]] = ' x '
+                    map[pos[0]][pos[1]] = ' x '
                 except:
                     print("Place ship issue: " + str(pos))
                     pass
         
         for pos in shot_map:
             try:
-                map[pos[1]][pos[0]] = ' * '
+                map[pos[0]][pos[1]] = ' * '
             except:
                 print("Shot issue: " + str(pos))
                 pass
@@ -29,10 +29,13 @@ class Map:
         print("Battleship hit: " + str(hit_rate) + "%" + "\n")
 
         # Draw the map
-        for i in range(self.boardWidth):
+        for i in reversed(range(self.boardWidth)):
             for j in range(self.boardHeight):
                 print(map[i][j], end=" ")
             print("\n")
+            # print(str(i) + "\n")
+        # for j in range(self.boardHeight):
+        #     print(" " + str(j) + " ", end=" ")
 
     # -----------------------------------------------------------------------------------------------------
     def hit_rate(self, ships, shot_map):

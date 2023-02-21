@@ -12,23 +12,23 @@ inviteRequest =  {
     "ships": [
             {
             "type": "CV",
-            "quantity": 1
+            "quantity": 2
             },
             {
             "type": "BB",
-            "quantity": 0
+            "quantity": 2
             },
             {
             "type": "OR",
-            "quantity": 0
+            "quantity": 1
             },
             {
             "type": "CA",
-            "quantity": 0
+            "quantity": 2
             },
             {
             "type": "DD",
-            "quantity": 0
+            "quantity": 2
             }
         ]
     }
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     pos = Position(inviteRequest['ships'])
     positions = pos.generate()
-    # pprint.pprint(positions)
+    pprint.pprint(positions)
 
     bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
 
@@ -61,6 +61,6 @@ if __name__ == "__main__":
         fire_position = bot.guess_random(shot_map)
         shot_map.append(fire_position)
 
-    shot_map = []
+    # shot_map = []
     map = Map(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
     map.draw(positions, shot_map)
