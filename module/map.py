@@ -13,14 +13,14 @@ class Map:
         for ship in ships:
             for pos in ship['coordinates']:
                 try:
-                    map[pos[0]][pos[1]] = ' x '
+                    map[pos[1]][pos[0]] = ' x '
                 except:
                     print("Place ship issue: " + str(pos))
                     pass
         
         for pos in shot_map:
             try:
-                map[pos[0]][pos[1]] = ' * '
+                map[pos[1]][pos[0]] = ' * '
             except:
                 print("Shot issue: " + str(pos))
                 pass

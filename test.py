@@ -61,6 +61,6 @@ if __name__ == "__main__":
         fire_position = bot.guess_random(shot_map)
         shot_map.append(fire_position)
 
-    # shot_map = []
+    shot_map = []
     map = Map(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
     map.draw(positions, shot_map)
