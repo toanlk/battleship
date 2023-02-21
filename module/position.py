@@ -53,15 +53,15 @@ class Position:
         # odd for horizontal and even for vertical, pick row and column
         direction = random.randint(1, size)
 
-        row = random.randint(0, 7)
-        col = random.randint(0, 19)
+        row = random.randint(0, 19)
+        col = random.randint(0, 7)
 
         if ship_type == "CV":
-            row = random.randint(0, 6) 
-            col = random.randint(1, 19)                                       
+            row = random.randint(1, 19) 
+            col = random.randint(0, 6)                                       
         # row = 6
         # col = 11
-        direction = 1
+        direction = 0
         positions = self.get_simple_position(direction, row, col, size)
 
         if ship_type == "OR":
@@ -73,20 +73,20 @@ class Position:
         elif ship_type == "CV":
             if (direction % 2 != 0) :
                 if (row - size > 0):
-                    fix_row = row - 1
+                    fix_row = row - 2
                 else:
-                    fix_row = row + 2
+                    fix_row = row + 1
                 # print('Row - Col => ' + str(row)+ ' => ' + str(col))
                 # print('Fix_Row - Size => ' + str(fix_row)+ ' => ' + str(size))
-                extra_positions = self.get_simple_position(direction, fix_row, col - 1, 1)
+                extra_positions = self.get_simple_position(direction, fix_row, col + 1, 1)
             else:
                 if (col - size > 0):
-                    fix_col = col - 2
+                    fix_col = col - 1
                 else:
-                    fix_col = col + 1
+                    fix_col = col + 2
                 # print('Row - Col => ' + str(row)+ ' => ' + str(col))
                 # print('Fix_Col - Size => ' + str(fix_col)+ ' => ' + str(size))
-                extra_positions = self.get_simple_position(direction, row + 1, fix_col, 1)
+                extra_positions = self.get_simple_position(direction, row - 1, fix_col, 1)
             positions.extend(extra_positions)
 
         return positions
