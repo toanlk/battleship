@@ -26,22 +26,28 @@ def save_file(session_id, data):
 def game_over():
     data = request.json
     session_id = request.headers['X-Session-Id']
-    save_file(session_id + "_game_over", data)
-
+    try:
+        save_file(session_id + "_game_over", data)
+    except:
+        pass
+    
     return { 'success': True }
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/notify", methods=["POST"])
 def notify():
     data = request.json
-
     session_id = request.headers['X-Session-Id']
-    notify_data = read_file(session_id + "_notify")
-    if notify_data:
-        notify_data.append(data)
-        save_file(session_id + "_notify", notify_data)
-    else:
-        save_file(session_id + "_notify", data)
+
+    try:
+        notify_data = read_file(session_id + "_notify")
+        if notify_data:
+            notify_data.append(data)
+            save_file(session_id + "_notify", notify_data)
+        else:
+            save_file(session_id + "_notify", data)
+    except:
+        pass
 
     return { 'success': True }
 
@@ -87,8 +93,12 @@ def invite():
     # Store invite
     json_object = json.dumps(request.json, indent=4)
     session_id = request.headers['X-Session-Id']
-    save_file(session_id, json_object)
 
+    try:
+        save_file(session_id, json_object)
+    except:
+        pass
+    
     return { 'success': True }
 
 @app.route("/")
