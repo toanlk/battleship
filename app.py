@@ -61,12 +61,12 @@ def notify():
 
             save_file(session_id, json.dumps(json_object))
 
-        notify_data = read_file(session_id + "_notify")
-        if notify_data:
-            notify_data.append(data)
-            save_file(session_id + "_notify", notify_data)
-        else:
-            save_file(session_id + "_notify", data)
+        # notify_data = read_file(session_id + "_notify")
+        # if notify_data:
+        #     notify_data.append(data)
+        #     save_file(session_id + "_notify", notify_data)
+        # else:
+        #     save_file(session_id + "_notify", data)
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         pass

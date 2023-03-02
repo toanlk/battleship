@@ -18,15 +18,16 @@ class Map:
                     print("Place ship issue: " + str(pos))
                     pass
         
-        for pos in shot_map:
-            try:
-                map[pos[1]][pos[0]] = ' * '
-            except:
-                print("Shot issue: " + str(pos))
-                pass
+        # for pos in shot_map:
+        #     try:
+        #         map[pos[1]][pos[0]] = ' * '
+        #     except:
+        #         print("Shot issue: " + str(pos))
+        #         pass
         
         hit_rate = self.hit_rate(ships, shot_map)
-        print("Battleship hit: " + str(round(len(shot_map)/160 * 100)) + " => " + str(hit_rate) + "%" + "\n")
+        total = self.boardWidth * self.boardHeight
+        print("Battleship hit: " + str(len(shot_map)) + "/" + str(total) + " = " + str(round(len(shot_map)/total * 100)) + "% => Total: " + str(hit_rate) + "%" + "\n")
 
         # Draw the map
         for i in reversed(range(self.boardWidth)):

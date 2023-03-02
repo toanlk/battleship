@@ -51,6 +51,11 @@ def get_ships(request_ships):
 if __name__ == "__main__":
     os.system('clear')
 
+    # bot = Bot(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
+    # targets = [[1, 5], [2, 5]]
+    # bot.guest_target(targets)
+    # sys.exit()
+
     map = Map(inviteRequest['boardHeight'], inviteRequest['boardWidth'])
 
     pos = Position(inviteRequest['ships'])
@@ -71,12 +76,20 @@ if __name__ == "__main__":
 
     while hit_rate < 100:
         guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
-
+        print("-----")
+        print("Shoot: " + str([guess_row, guess_col]))
+        
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])
         if ship_map[guess_row, guess_col] == 1:
+            print("Hit")
             is_sunk, ship_hit = map.is_sunk_ship(positions, simple_shot_map, guess_row, guess_col)
             targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, ship_hit, targets, potential_targets, shot_map)
+
+            if is_sunk:
+                print("Sunk")
+        print("Targets: " + str(targets))
+        print("Potential_targets: " + str([guess_row, guess_col]))
 
         hit_rate = map.hit_rate(positions, simple_shot_map)
 
