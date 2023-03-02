@@ -59,19 +59,44 @@ def shoot():
     session_id = request.headers['X-Session-Id']
     json_object = read_file(session_id)
 
-    shot_map = []
+    targets = []
+    if 'targets' in json_object:
+        targets = json_object['targets']
+
+    potential_targets = []
+    if 'potential_targets' in json_object:
+        potential_targets = json_object['potential_targets']
+
+    shot_map = np.zeros([json_object['boardWidth'], json_object['boardHeight']])
     if 'shot_map' in json_object:
         shot_map = json_object['shot_map']
+
+    simple_shot_map = []
+    if 'simple_shot_map' in json_object:
+        simple_shot_map = json_object['simple_shot_map']
         
     bot = Bot()
 
-    fire_position = []
-    for i in range(0, data['maxShots']):
-        pos = bot.guess_random(shot_map)
-        fire_position.append(pos)
+    # fire_position = []
 
-    shot_map.extend(fire_position)
+    for i in range(0, data['maxShots']):
+        # pos = bot.guess_random(shot_map)
+        # fire_position.append(pos)
+
+        guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
+
+        shot_map[guess_row][guess_col] = 1
+        simple_shot_map.append([guess_row, guess_col])
+        if ship_map[guess_row, guess_col] == 1:
+            is_sunk, ship_hit = map.is_sunk_ship(positions, simple_shot_map, guess_row, guess_col)
+            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, ship_hit, targets, potential_targets, shot_map)
+
+    simple_shot_map.extend([guess_row, guess_col])
+    json_object['simple_shot_map'] = simple_shot_map
     json_object['shot_map'] = shot_map
+    json_object['targets'] = targets
+    json_object['potential_targets'] = potential_targets
+
     save_file(session_id, json.dumps(json_object))
     
     return {"coordinates" : fire_position}

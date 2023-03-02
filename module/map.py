@@ -1,4 +1,4 @@
-import pprint
+import pprint, sys
 
 class Map:
     def __init__(self, boardWidth, boardHeight):
@@ -26,16 +26,13 @@ class Map:
                 pass
         
         hit_rate = self.hit_rate(ships, shot_map)
-        print("Battleship hit: " + str(hit_rate) + "%" + "\n")
+        print("Battleship hit: " + str(round(len(shot_map)/160 * 100)) + " => " + str(hit_rate) + "%" + "\n")
 
         # Draw the map
         for i in reversed(range(self.boardWidth)):
             for j in range(self.boardHeight):
                 print(map[i][j], end=" ")
             print("\n")
-            # print(str(i) + "\n")
-        # for j in range(self.boardHeight):
-        #     print(" " + str(j) + " ", end=" ")
 
     # -----------------------------------------------------------------------------------------------------
     def hit_rate(self, ships, shot_map):
@@ -50,3 +47,27 @@ class Map:
                 hit = hit + 1
 
         return round(hit/len(coordinates) * 100)
+
+    # -----------------------------------------------------------------------------------------------------
+    def is_sunk_ship(self, ships, shot_map, guess_row, guess_col):
+        is_sunk = False
+
+        ship_hit = None
+        ship_coordinates = []
+        for ship in ships:
+            if [guess_row, guess_col] in ship['coordinates']:
+                ship_hit = ship
+                ship_coordinates = ship['coordinates']
+                break
+
+        hit_count = 0
+        for pos in ship_coordinates:
+            if pos in shot_map:
+                hit_count = hit_count + 1
+
+        if hit_count == len(ship['coordinates']):
+            is_sunk = True
+            # print(is_sunk)
+            # print(ship)
+
+        return is_sunk, ship_hit
