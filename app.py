@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os, sys, json, pprint
+import numpy as np
 
 from flask import Flask
 from flask import request
