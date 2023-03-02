@@ -40,6 +40,21 @@ def notify():
     session_id = request.headers['X-Session-Id']
 
     try:
+        if data['shots']['status'] == "HIT":
+            json_object = read_file(session_id)
+
+            is_sunk = False
+            if len(data['sunkShips']) > 0:
+                is_sunk = True
+            
+            guess_row = data['shots']['coordinate'][0]
+            guess_col = data['shots']['coordinate'][1]
+            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], json_object['shot_map'])
+            json_object['targets'] = targets
+            json_object['potential_targets'] = potential_targets
+
+            save_file(session_id, json.dumps(json_object))
+
         notify_data = read_file(session_id + "_notify")
         if notify_data:
             notify_data.append(data)
@@ -87,9 +102,6 @@ def shoot():
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])
-        if ship_map[guess_row, guess_col] == 1:
-            is_sunk, ship_hit = map.is_sunk_ship(positions, simple_shot_map, guess_row, guess_col)
-            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, ship_hit, targets, potential_targets, shot_map)
 
     simple_shot_map.extend([guess_row, guess_col])
     json_object['simple_shot_map'] = simple_shot_map
@@ -99,7 +111,8 @@ def shoot():
 
     save_file(session_id, json.dumps(json_object))
     
-    return {"coordinates" : fire_position}
+    # return {"coordinates" : fire_position}
+    return {"coordinates" : [guess_row, guess_col]}
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/place-ships", methods=["POST"])
