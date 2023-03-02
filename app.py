@@ -50,7 +50,8 @@ def notify():
             
             guess_row = data['shots']['coordinate'][0]
             guess_col = data['shots']['coordinate'][1]
-            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], json_object['shot_map'])
+            shot_map = np.array(json_object['shot_map'])
+            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], shot_map)
             json_object['targets'] = targets
             json_object['potential_targets'] = potential_targets
 
@@ -85,7 +86,7 @@ def shoot():
 
     shot_map = np.zeros([json_object['boardWidth'], json_object['boardHeight']])
     if 'shot_map' in json_object:
-        shot_map = json_object['shot_map']
+        shot_map = np.array(json_object['shot_map'])
 
     simple_shot_map = []
     if 'simple_shot_map' in json_object:
@@ -106,7 +107,7 @@ def shoot():
 
     simple_shot_map.extend([guess_row, guess_col])
     json_object['simple_shot_map'] = simple_shot_map
-    json_object['shot_map'] = shot_map
+    json_object['shot_map'] = shot_map.tolist()
     json_object['targets'] = targets
     json_object['potential_targets'] = potential_targets
 
