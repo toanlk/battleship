@@ -94,13 +94,13 @@ def shoot():
         
     bot = Bot()
 
-    # fire_position = []
-
+    fire_position = []
     for i in range(0, data['maxShots']):
         # pos = bot.guess_random(shot_map)
         # fire_position.append(pos)
 
         guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
+        fire_position.append([guess_row, guess_col])
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])
@@ -113,8 +113,7 @@ def shoot():
 
     save_file(session_id, json.dumps(json_object))
     
-    # return {"coordinates" : fire_position}
-    return {"coordinates" : [guess_row, guess_col]}
+    return {"coordinates" : fire_position}
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/place-ships", methods=["POST"])
