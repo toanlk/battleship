@@ -43,7 +43,7 @@ def notify():
     try:
 
         print("Notify: ")
-        print(json_object)
+        print(data)
 
         if data['shots']['status'] == "HIT":
             json_object = read_file(session_id)
@@ -67,7 +67,8 @@ def notify():
             save_file(session_id + "_notify", notify_data)
         else:
             save_file(session_id + "_notify", data)
-    except:
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
         pass
 
     return { 'success': True }
