@@ -47,6 +47,10 @@ def notify():
     data = request.json
     session_id = request.headers['X-Session-Id']
 
+    global SHOT_MAP
+    global TARGETS
+    global POTENTIAL_TARGETS
+
     try:
         json_object = read_file(session_id)
         # shot_map = np.array(json_object['shot_map'])
@@ -85,6 +89,11 @@ def notify():
 @app.route("/shoot", methods=["POST"])
 def shoot():
     data = request.json
+
+    global SHOT_MAP
+    global SIMPLE_SHOT_MAP
+    global TARGETS
+    global POTENTIAL_TARGETS
 
     session_id = request.headers['X-Session-Id']
     json_object = read_file(session_id)
