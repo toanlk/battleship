@@ -61,7 +61,7 @@ class Bot:
         return fire_position
 
     def notify(self, session_id, data):
-        json_object = read_file(session_id)
+        json_object = self.read_file(session_id)
         shot_map = np.array(json_object['shot_map'])
         targets = np.array(json_object['targets'])
         potential_targets = json_object['potential_targets']
