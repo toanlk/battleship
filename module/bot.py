@@ -18,7 +18,7 @@ class Bot:
         data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
         data['targets'] = self.TARGETS
         data['potential_targets'] = self.POTENTIAL_TARGETS
-        self.save_file(self.sessionID, data)
+        self.save_file(self.sessionID, json.dump(data))
 
     # -----------------------------------------------------------------------------------------------------
     def read_file(self, session_id):

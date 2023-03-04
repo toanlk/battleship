@@ -89,11 +89,11 @@ def place_ships():
 @app.route("/invite", methods=["POST"])
 def invite():
     try:
-        json_object = json.dumps(request.json, indent=4)
+        data = request.json
         session_id = request.headers['X-Session-Id']
 
         global BOT
-        BOT = Bot(BOARD_HEIGHT, BOARD_WIDTH, session_id, json_object)
+        BOT = Bot(BOARD_HEIGHT, BOARD_WIDTH, session_id, data)
     except Exception as err:
         print(err)
         traceback.print_exc()
