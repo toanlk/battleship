@@ -12,12 +12,9 @@ BOARD_WIDTH = 20
 BOARD_HEIGHT = 8
 
 APP_PATH = os.getcwd()
-SHOT_MAP = np.zeros([BOARD_WIDTH, BOARD_HEIGHT])
-SIMPLE_SHOT_MAP = []
-TARGETS = []
-POTENTIAL_TARGETS = []
 
 app = Flask(__name__)
+BOT = None
 
 def read_file(session_id):
     data =[]
@@ -47,19 +44,14 @@ def notify():
     data = request.json
     session_id = request.headers['X-Session-Id']
 
-    global SHOT_MAP
-    global TARGETS
-    global POTENTIAL_TARGETS
+    global BOT
 
     try:
         json_object = read_file(session_id)
-        # shot_map = np.array(json_object['shot_map'])
-        # targets = np.array(json_object['targets'])
-        # potential_targets = json_object['potential_targets']
-        shot_map = SHOT_MAP
-        targets = TARGETS
-        potential_targets = POTENTIAL_TARGETS
-
+        shot_map = np.array(json_object['shot_map'])
+        targets = np.array(json_object['targets'])
+        potential_targets = json_object['potential_targets']
+     
         if data['shots']['status'] == "HIT":
             is_sunk = False
             if len(data['sunkShips']) > 0:
@@ -68,16 +60,13 @@ def notify():
             guess_row = data['shots']['coordinate'][0]
             guess_col = data['shots']['coordinate'][1]
             
-            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], targets, potential_targets, shot_map)
+            targets, potential_targets = BOT.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], targets, potential_targets, shot_map)
         elif data['shots']['status'] == "MISS":
-            potential_targets = bot.target_miss(targets, potential_targets, shot_map)
+            potential_targets = BOT.target_miss(targets, potential_targets, shot_map)
 
         json_object['targets'] = targets
         json_object['potential_targets'] = potential_targets
         save_file(session_id, json.dumps(json_object))
-
-        POTENTIAL_TARGETS = potential_targets
-        TARGETS = targets
 
     except Exception as err:
         print(err)
@@ -90,13 +79,10 @@ def notify():
 def shoot():
     data = request.json
 
-    global SHOT_MAP
-    global SIMPLE_SHOT_MAP
-    global TARGETS
-    global POTENTIAL_TARGETS
-
     session_id = request.headers['X-Session-Id']
     json_object = read_file(session_id)
+
+    global BOT
 
     targets = []
     if 'targets' in json_object:
@@ -114,22 +100,10 @@ def shoot():
     if 'simple_shot_map' in json_object:
         simple_shot_map = json_object['simple_shot_map']
 
-    shot_map = SHOT_MAP
-    targets = TARGETS
-    potential_targets = POTENTIAL_TARGETS
-    simple_shot_map = SIMPLE_SHOT_MAP
-        
-    bot = Bot()
-
     fire_position = []
     for i in range(0, data['maxShots']):
-        # pos = bot.guess_random(shot_map)
-        # fire_position.append(pos)
-
-        guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
+        guess_row, guess_col, potential_targets = BOT.hunt_target(targets, potential_targets, shot_map)
         fire_position.append([guess_row, guess_col])
-
-        # print("Shoot: " + str(fire_position))
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])
@@ -141,11 +115,6 @@ def shoot():
     json_object['potential_targets'] = potential_targets
 
     save_file(session_id, json.dumps(json_object))
-
-    SHOT_MAP = shot_map
-    SIMPLE_SHOT_MAP = simple_shot_map
-    POTENTIAL_TARGETS = potential_targets
-    TARGETS = targets
     
     return {"coordinates" : fire_position}
 
@@ -169,6 +138,8 @@ def invite():
     session_id = request.headers['X-Session-Id']
 
     try:
+        global BOT
+        BOT = Bot(BOARD_HEIGHT, BOARD_WIDTH, session_id)
         save_file(session_id, json_object)
     except:
         pass

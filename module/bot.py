@@ -2,9 +2,15 @@ import random
 import numpy as np
 
 class Bot:
-    def __init__(self, boardWidth = 8, boardHeight = 20):
+    def __init__(self, boardWidth = 8, boardHeight = 20, sessionID = None):
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
+        self.sessionID = sessionID
+
+        self.shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
+        self.simple_shot_map = []
+        self.targets = []
+        self.potential_targets = []
 
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
