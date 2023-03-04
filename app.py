@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, sys, json, pprint
 import numpy as np
+import traceback
 
 from flask import Flask
 from flask import request
@@ -51,6 +52,7 @@ def notify():
         BOT.notify(session_id, data)
     except Exception as err:
         print(err)
+        traceback.print_exc()
         pass
 
     return { 'success': True }
@@ -61,8 +63,13 @@ def shoot():
     data = request.json
     session_id = request.headers['X-Session-Id']
 
-    global BOT
-    fire_position = BOT.shoot(session_id, data, data['maxShots'])
+    try:
+        global BOT
+        fire_position = BOT.shoot(session_id, data, data['maxShots'])
+    except Exception as err:
+        print(err)
+        traceback.print_exc()
+        pass
     
     return {"coordinates" : fire_position}
 

@@ -10,6 +10,7 @@ class Bot:
 
         self.SHOT_MAP = np.zeros([self.boardHeight, self.boardWidth])
         self.SIMPLE_SHOT_MAP = []
+
         self.TARGETS = []
         self.POTENTIAL_TARGETS = []
 
@@ -54,12 +55,12 @@ class Bot:
             self.SHOT_MAP[guess_row][guess_col] = 1
             self.SIMPLE_SHOT_MAP.append([guess_row, guess_col])
 
-        json_object['simple_shot_map'] = self.SIMPLE_SHOT_MAP
-        json_object['shot_map'] = self.SHOT_MAP.tolist()
-        json_object['targets'] = self.TARGETS
-        json_object['potential_targets'] = self.POTENTIAL_TARGETS
+        # json_object['simple_shot_map'] = self.SIMPLE_SHOT_MAP
+        # json_object['shot_map'] = self.SHOT_MAP.tolist()
+        # json_object['targets'] = self.TARGETS
+        # json_object['potential_targets'] = self.POTENTIAL_TARGETS
 
-        self.save_file(session_id, json.dumps(json_object))
+        # self.save_file(session_id, json.dumps(json_object))
 
         return fire_position
 
