@@ -102,7 +102,7 @@ def shoot():
         guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
         fire_position.append([guess_row, guess_col])
 
-        print("Shoot: " + str(fire_position))
+        # print("Shoot: " + str(fire_position))
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])

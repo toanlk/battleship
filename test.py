@@ -16,7 +16,7 @@ inviteRequest =  {
     "ships": [
             {
             "type": "CV",
-            "quantity": 2
+            "quantity": 1
             },
             {
             "type": "BB",
@@ -24,7 +24,7 @@ inviteRequest =  {
             },
             {
             "type": "OR",
-            "quantity": 1
+            "quantity": 3
             },
             {
             "type": "CA",
@@ -32,7 +32,7 @@ inviteRequest =  {
             },
             {
             "type": "DD",
-            "quantity": 2
+            "quantity": 1
             }
         ]
     }
