@@ -57,11 +57,11 @@ def notify():
             json_object['targets'] = targets
             json_object['potential_targets'] = potential_targets
             save_file(session_id, json.dumps(json_object))
-        elif data['shots']['status'] == "MISS":
-            potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
+        # elif data['shots']['status'] == "MISS":
+        #     potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
 
-            json_object['potential_targets'] = potential_targets
-            save_file(session_id, json.dumps(json_object))
+        #     json_object['potential_targets'] = potential_targets
+        #     save_file(session_id, json.dumps(json_object))
 
     except Exception as err:
         print(err)
