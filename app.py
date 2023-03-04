@@ -76,17 +76,12 @@ def shoot():
 # -----------------------------------------------------------------------------------------------------
 @app.route("/place-ships", methods=["POST"])
 def place_ships():
-    try:
-        session_id = request.headers['X-Session-Id']
-        json_object = read_file(session_id)
+    session_id = request.headers['X-Session-Id']
+    json_object = read_file(session_id)
 
-        pos = Position(json_object['ships'])
-        positions = pos.generate()
-        pprint.pprint(positions)
-    except Exception as err:
-        print(err)
-        traceback.print_exc()
-        pass
+    pos = Position(json_object['ships'])
+    positions = pos.generate()
+    pprint.pprint(positions)
 
     return {"ships": positions}
 
