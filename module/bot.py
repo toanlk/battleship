@@ -7,7 +7,7 @@ class Bot:
         self.boardHeight = boardHeight
         self.sessionID = sessionID
 
-        self.shot_map = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
+        self.shot_map = np.zeros([self.boardHeight, self.boardWidth])
         self.simple_shot_map = []
         self.targets = []
         self.potential_targets = []
