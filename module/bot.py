@@ -74,6 +74,8 @@ class Bot:
         shot_map = np.array(json_object['shot_map'])
         targets = np.array(json_object['targets'])
         potential_targets = json_object['potential_targets']
+        
+        print(data)
      
         if data['shots']['status'] == "HIT":
             is_sunk = False
