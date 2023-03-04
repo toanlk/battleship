@@ -47,7 +47,7 @@ class Bot:
 
         fire_position = []
         for i in range(0, max_shots):
-            guess_row, guess_col, potential_targets = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+            guess_row, guess_col, self.POTENTIAL_TARGETS = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
             fire_position.append([guess_row, guess_col])
 
             self.SHOT_MAP[guess_row][guess_col] = 1
