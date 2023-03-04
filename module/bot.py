@@ -74,10 +74,10 @@ class Bot:
         shot_map = np.array(json_object['shot_map'])
         targets = np.array(json_object['targets'])
         potential_targets = json_object['potential_targets']
-        
+
         print(data)
      
-        if data['shots']['status'] == "HIT":
+        if data[0]['shots']['status'] == "HIT":
             is_sunk = False
             if len(data['sunkShips']) > 0:
                 is_sunk = True
@@ -86,7 +86,7 @@ class Bot:
             guess_col = data['shots']['coordinate'][1]
             
             self.TARGETS, self.POTENTIAL_TARGETS = BOT.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
-        elif data['shots']['status'] == "MISS":
+        elif data[0]['shots']['status'] == "MISS":
             self.POTENTIAL_TARGETS = BOT.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
 
         json_object['targets'] = self.TARGETS
