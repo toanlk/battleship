@@ -43,6 +43,8 @@ class Bot:
         # if 'simple_shot_map' in json_object:
         #     simple_shot_map = json_object['simple_shot_map']
 
+        json_object = self.read_file(session_id)
+
         fire_position = []
         for i in range(0, max_shots):
             guess_row, guess_col, potential_targets = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
@@ -51,12 +53,12 @@ class Bot:
             self.SHOT_MAP[guess_row][guess_col] = 1
             self.SIMPLE_SHOT_MAP.append([guess_row, guess_col])
 
-        data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
-        data['shot_map'] = self.SHOT_MAP.tolist()
-        data['targets'] = self.TARGETS
-        data['potential_targets'] = self.POTENTIAL_TARGETS
+        json_object['simple_shot_map'] = self.SIMPLE_SHOT_MAP
+        json_object['shot_map'] = self.SHOT_MAP.tolist()
+        json_object['targets'] = self.TARGETS
+        json_object['potential_targets'] = self.POTENTIAL_TARGETS
 
-        self.save_file(session_id, json.dumps(data))
+        self.save_file(session_id, json.dumps(json_object))
 
         return fire_position
 
