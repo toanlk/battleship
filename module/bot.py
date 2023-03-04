@@ -14,6 +14,10 @@ class Bot:
         self.TARGETS = []
         self.POTENTIAL_TARGETS = []
 
+        data['shot_map'] = self.SHOT_MAP
+        data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
+        data['targets'] = self.TARGETS
+        data['potential_targets'] = self.POTENTIAL_TARGETS
         self.save_file(self.sessionID, data)
 
     # -----------------------------------------------------------------------------------------------------
@@ -66,6 +70,7 @@ class Bot:
 
     def notify(self, session_id, data):
         json_object = self.read_file(session_id)
+
         shot_map = np.array(json_object['shot_map'])
         targets = np.array(json_object['targets'])
         potential_targets = json_object['potential_targets']
