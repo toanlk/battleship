@@ -10,7 +10,9 @@ class Map:
         # Initialize the map
         map = [[' . ' for x in range(self.boardHeight)] for y in range(self.boardWidth)]
 
+        total_ship = 0
         for ship in ships:
+            total_ship = total_ship + 1
             for pos in ship['coordinates']:
                 try:
                     map[pos[1]][pos[0]] = ' x '
@@ -27,7 +29,8 @@ class Map:
         
         hit_rate = self.hit_rate(ships, shot_map)
         total = self.boardWidth * self.boardHeight
-        print("Battleship hit: " + str(len(shot_map)) + "/" + str(total) + " = " + str(round(len(shot_map)/total * 100)) + "% => Total: " + str(hit_rate) + "%" + "\n")
+        str_hit = " => Total: " + str(hit_rate) + "%" + "\n"
+        print(" Battleship hit: " + str(len(shot_map)) + "/" + str(total) + " = " + str(round(len(shot_map)/total * 100)) + "% -- [Ship fleet: " + str(total_ship) +"]")
 
         # Draw the map
         for i in reversed(range(self.boardWidth)):

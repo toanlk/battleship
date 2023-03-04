@@ -41,32 +41,28 @@ def notify():
     session_id = request.headers['X-Session-Id']
 
     try:
-
-        print("Notify: ")
-        print(data)
+        json_object = read_file(session_id)
+        shot_map = np.array(json_object['shot_map'])
 
         if data['shots']['status'] == "HIT":
-            json_object = read_file(session_id)
-
             is_sunk = False
             if len(data['sunkShips']) > 0:
                 is_sunk = True
             
             guess_row = data['shots']['coordinate'][0]
             guess_col = data['shots']['coordinate'][1]
-            shot_map = np.array(json_object['shot_map'])
+            
             targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], shot_map)
+
             json_object['targets'] = targets
             json_object['potential_targets'] = potential_targets
+            save_file(session_id, json.dumps(json_object))
+        elif data['shots']['status'] == "MISS":
+            potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
 
+            json_object['potential_targets'] = potential_targets
             save_file(session_id, json.dumps(json_object))
 
-        # notify_data = read_file(session_id + "_notify")
-        # if notify_data:
-        #     notify_data.append(data)
-        #     save_file(session_id + "_notify", notify_data)
-        # else:
-        #     save_file(session_id + "_notify", data)
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         pass
@@ -107,7 +103,7 @@ def shoot():
         guess_row, guess_col, potential_targets = bot.hunt_target(targets, potential_targets, shot_map)
         fire_position.append([guess_row, guess_col])
 
-        print("Shoot: " + str(fire_position))
+        # print("Shoot: " + str(fire_position))
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])
