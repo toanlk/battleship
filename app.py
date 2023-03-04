@@ -9,6 +9,10 @@ from module.bot import Bot
 from module.position import Position
 
 APP_PATH = os.getcwd()
+SHOT_MAP = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
+SIMPLE_SHOT_MAP = []
+TARGETS = []
+POTENTIAL_TARGETS = []
 
 app = Flask(__name__)
 
@@ -42,8 +46,12 @@ def notify():
 
     try:
         json_object = read_file(session_id)
-        shot_map = np.array(json_object['shot_map'])
-        potential_targets = json_object['potential_targets']
+        # shot_map = np.array(json_object['shot_map'])
+        # targets = np.array(json_object['targets'])
+        # potential_targets = json_object['potential_targets']
+        shot_map = SHOT_MAP
+        targets = TARGETS
+        potential_targets = POTENTIAL_TARGETS
 
         if data['shots']['status'] == "HIT":
             is_sunk = False
@@ -53,14 +61,16 @@ def notify():
             guess_row = data['shots']['coordinate'][0]
             guess_col = data['shots']['coordinate'][1]
             
-            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], shot_map)
-
-            json_object['targets'] = targets
+            targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], targets, potential_targets, shot_map)
         elif data['shots']['status'] == "MISS":
-            potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
+            potential_targets = bot.target_miss(targets, potential_targets, shot_map)
 
+        json_object['targets'] = targets
         json_object['potential_targets'] = potential_targets
         save_file(session_id, json.dumps(json_object))
+
+        POTENTIAL_TARGETS = potential_targets
+        TARGETS = targets
 
     except Exception as err:
         print(err)
@@ -91,6 +101,11 @@ def shoot():
     simple_shot_map = []
     if 'simple_shot_map' in json_object:
         simple_shot_map = json_object['simple_shot_map']
+
+    shot_map = SHOT_MAP
+    targets = TARGETS
+    potential_targets = POTENTIAL_TARGETS
+    simple_shot_map = SIMPLE_SHOT_MAP
         
     bot = Bot()
 
@@ -114,6 +129,11 @@ def shoot():
     json_object['potential_targets'] = potential_targets
 
     save_file(session_id, json.dumps(json_object))
+
+    SHOT_MAP = shot_map
+    SIMPLE_SHOT_MAP = simple_shot_map
+    POTENTIAL_TARGETS = potential_targets
+    TARGETS = targets
     
     return {"coordinates" : fire_position}
 
@@ -152,7 +172,7 @@ def index():
 if __name__ == "__main__":
     try:
         if os.name == 'nt':
-            os.system('cls')
+            # os.system('cls')
             app.run(debug=True)
             app.run(host="10.10.2.58", port=5000, debug=False, threaded=True)
 
