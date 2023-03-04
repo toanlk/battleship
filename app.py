@@ -8,8 +8,11 @@ from flask import request
 from module.bot import Bot
 from module.position import Position
 
+BOARD_WIDTH = 20
+BOARD_HEIGHT = 8
+
 APP_PATH = os.getcwd()
-SHOT_MAP = np.zeros([inviteRequest['boardWidth'], inviteRequest['boardHeight']])
+SHOT_MAP = np.zeros([BOARD_WIDTH, BOARD_HEIGHT])
 SIMPLE_SHOT_MAP = []
 TARGETS = []
 POTENTIAL_TARGETS = []
