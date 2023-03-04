@@ -141,7 +141,8 @@ def invite():
         global BOT
         BOT = Bot(BOARD_HEIGHT, BOARD_WIDTH, session_id)
         save_file(session_id, json_object)
-    except:
+    except Exception as err:
+        print(err)
         pass
     
     return { 'success': True }
@@ -164,5 +165,6 @@ if __name__ == "__main__":
 
             app.run(debug=True)
             app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
-    except Exception as e:
+    except Exception as err:
+        print(err)
         pass
