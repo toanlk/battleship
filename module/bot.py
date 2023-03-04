@@ -18,7 +18,7 @@ class Bot:
         data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
         data['targets'] = self.TARGETS
         data['potential_targets'] = self.POTENTIAL_TARGETS
-        self.save_file(self.sessionID, data)
+        self.save_file(self.sessionID, json.dumps(data))
 
     # -----------------------------------------------------------------------------------------------------
     def read_file(self, session_id):
@@ -92,7 +92,7 @@ class Bot:
         self.save_file(session_id, json.dumps(json_object))
 
     def game_over(self, session_id, data):
-        self.save_file(session_id + "_game_over", data)
+        self.save_file(session_id + "_game_over", json.dumps(data))
 
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
