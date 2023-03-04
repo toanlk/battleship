@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, sys, json, pprint
 import numpy as np
+import logging
 
 from flask import Flask
 from flask import request
@@ -9,6 +10,7 @@ from module.bot import Bot
 from module.position import Position
 
 APP_PATH = os.getcwd()
+logging.basicConfig(filename="log.txt", level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -64,7 +66,7 @@ def notify():
             save_file(session_id, json.dumps(json_object))
 
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
+        logging.error(err)
         pass
 
     return { 'success': True }
@@ -104,6 +106,7 @@ def shoot():
         fire_position.append([guess_row, guess_col])
 
         # print("Shoot: " + str(fire_position))
+        logging.debug(str(session_id) + " - Shoot: " + str(fire_position))
 
         shot_map[guess_row][guess_col] = 1
         simple_shot_map.append([guess_row, guess_col])

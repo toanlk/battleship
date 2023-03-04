@@ -6,19 +6,6 @@ class Bot:
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
 
-        # targets = []
-        # potential_targets = []
-        # self.SHOT_MAP = np.zeros([boardHeight, boardWidth])
-        # self.SIMPLE_SHOT_MAP = []
-
-        # self.SHIP_MAP = np.zeros([boardHeight, boardWidth])
-        # # self.SHIP_INFO = {"Carrier": 5, "Battleship": 4, "Destroyer": 3, "Submarine": 3, "Patrol Boat": 2}
-        # self.SHIP_INFO = {"Battleship": 4}
-        # self.SHIP_COORDINATE_DICT = dict()
-        # self.COORDINATE_SHIP_DICT = dict()
-        # self.SUNK_SHIP_COORDINATES = []
-        # self.PROB_MAP = np.zeros([boardHeight, boardWidth])
-        
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
         while True:
@@ -39,8 +26,8 @@ class Bot:
         potential_targets = [(target_row + 1, target_col), (target_row, target_col + 1),
                     (target_row - 1, target_col), (target_row, target_col - 1)]
 
-        if len(targets) > 1:
-            potential_targets = self.guest_target(targets, shot_map)
+        # if len(targets) > 1:
+        #     potential_targets = self.guest_target(targets, shot_map)
                             
         potential_targets = self.calculate_targets(potential_targets, targets, shot_map)
 
@@ -67,6 +54,15 @@ class Bot:
                         ((guess_row, guess_col) not in targets):
                     data.append((guess_row, guess_col))
         return data
+
+    # -----------------------------------------------------------------------------------------------------
+    def hunt_target(self, targets, potential_targets, shot_map):
+        if targets and len(potential_targets) > 0:
+            guess_row, guess_col = potential_targets.pop()
+        else:
+            guess_row, guess_col = self.guess_random(shot_map)
+            
+        return guess_row, guess_col, potential_targets
 
     # -----------------------------------------------------------------------------------------------------
     def guest_target(self, targets, shot_map):
@@ -98,10 +94,6 @@ class Bot:
             if pos[0] > high_y:
                 high_y = pos[0]
 
-        # print("direction_x: " + direction_x + " - " + "direction_y: " + direction_y)
-        # print("max_size: " + str(max_size))
-        # print("high_x: " + str(high_x))
-        # print("low_x: " + str(low_x))
         potential_targets = []
         if 'x' in direction_x:
             lst = []
@@ -136,14 +128,3 @@ class Bot:
         potential_targets = self.calculate_targets(potential_targets, targets, shot_map)
         # print(potential_targets)
         return potential_targets
-
-    # -----------------------------------------------------------------------------------------------------
-    def hunt_target(self, targets, potential_targets, shot_map):
-        if targets and len(potential_targets) > 0:
-            guess_row, guess_col = potential_targets.pop()
-            print("Target: " + str([guess_row, guess_col]))
-        else:
-            guess_row, guess_col = self.guess_random(shot_map)
-            print("Hunt: " + str([guess_row, guess_col]))
-            
-        return guess_row, guess_col, potential_targets
