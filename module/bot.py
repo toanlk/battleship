@@ -141,7 +141,9 @@ class Bot:
     def hunt_target(self, targets, potential_targets, shot_map):
         if targets and len(potential_targets) > 0:
             guess_row, guess_col = potential_targets.pop()
+            print("Target: " + str([guess_row, guess_col]))
         else:
             guess_row, guess_col = self.guess_random(shot_map)
+            print("Hunt: " + str([guess_row, guess_col]))
             
         return guess_row, guess_col, potential_targets
