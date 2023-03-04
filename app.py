@@ -30,10 +30,10 @@ def save_file(session_id, data):
 # -----------------------------------------------------------------------------------------------------
 @app.route("/game-over", methods=["POST"])
 def game_over():
-    data = request.json
-    session_id = request.headers['X-Session-Id']
-
     try:
+        data = request.json
+        session_id = request.headers['X-Session-Id']
+
         BOT.game_over(session_id, data)
     except Exception as err:
         print(err)
@@ -44,10 +44,10 @@ def game_over():
 # -----------------------------------------------------------------------------------------------------
 @app.route("/notify", methods=["POST"])
 def notify():
-    data = request.json
-    session_id = request.headers['X-Session-Id']
-
     try:
+        data = request.json
+        session_id = request.headers['X-Session-Id']
+
         global BOT
         BOT.notify(session_id, data)
     except Exception as err:
@@ -60,10 +60,10 @@ def notify():
 # -----------------------------------------------------------------------------------------------------
 @app.route("/shoot", methods=["POST"])
 def shoot():
-    data = request.json
-    session_id = request.headers['X-Session-Id']
-
     try:
+        data = request.json
+        session_id = request.headers['X-Session-Id']
+
         global BOT
         fire_position = BOT.shoot(session_id, data, data['maxShots'])
     except Exception as err:
@@ -76,26 +76,32 @@ def shoot():
 # -----------------------------------------------------------------------------------------------------
 @app.route("/place-ships", methods=["POST"])
 def place_ships():
-    session_id = request.headers['X-Session-Id']
-    json_object = read_file(session_id)
+    try:
+        session_id = request.headers['X-Session-Id']
+        json_object = read_file(session_id)
 
-    pos = Position(json_object['ships'])
-    positions = pos.generate()
-    pprint.pprint(positions)
+        pos = Position(json_object['ships'])
+        positions = pos.generate()
+        pprint.pprint(positions)
+    except Exception as err:
+        print(err)
+        traceback.print_exc()
+        pass
 
     return {"ships": positions}
 
 # -----------------------------------------------------------------------------------------------------
 @app.route("/invite", methods=["POST"])
 def invite():
-    json_object = json.dumps(request.json, indent=4)
-    session_id = request.headers['X-Session-Id']
-
     try:
+        json_object = json.dumps(request.json, indent=4)
+        session_id = request.headers['X-Session-Id']
+
         global BOT
         BOT = Bot(BOARD_HEIGHT, BOARD_WIDTH, session_id, json_object)
     except Exception as err:
         print(err)
+        traceback.print_exc()
         pass
     
     return { 'success': True }
