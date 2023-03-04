@@ -43,6 +43,7 @@ def notify():
     try:
         json_object = read_file(session_id)
         shot_map = np.array(json_object['shot_map'])
+        potential_targets = json_object['potential_targets']
 
         if data['shots']['status'] == "HIT":
             is_sunk = False
@@ -55,13 +56,11 @@ def notify():
             targets, potential_targets = bot.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], json_object['targets'], json_object['potential_targets'], shot_map)
 
             json_object['targets'] = targets
-            json_object['potential_targets'] = potential_targets
-            save_file(session_id, json.dumps(json_object))
-        # elif data['shots']['status'] == "MISS":
-        #     potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
+        elif data['shots']['status'] == "MISS":
+            potential_targets = bot.target_miss(json_object['targets'], json_object['potential_targets'], shot_map)
 
-        #     json_object['potential_targets'] = potential_targets
-        #     save_file(session_id, json.dumps(json_object))
+        json_object['potential_targets'] = potential_targets
+        save_file(session_id, json.dumps(json_object))
 
     except Exception as err:
         print(err)
