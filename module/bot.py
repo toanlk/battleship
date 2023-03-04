@@ -14,7 +14,7 @@ class Bot:
         self.TARGETS = []
         self.POTENTIAL_TARGETS = []
 
-        data['shot_map'] = self.SHOT_MAP.tolist()
+        data['shot_map'] = self.SHOT_MAP
         data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
         data['targets'] = self.TARGETS
         data['potential_targets'] = self.POTENTIAL_TARGETS
