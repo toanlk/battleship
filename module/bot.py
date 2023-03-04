@@ -2,15 +2,88 @@ import random
 import numpy as np
 
 class Bot:
-    def __init__(self, boardWidth = 8, boardHeight = 20, sessionID = None):
+    def __init__(self, boardWidth = 8, boardHeight = 20, sessionID = None, data = None):
         self.boardWidth = boardWidth
         self.boardHeight = boardHeight
         self.sessionID = sessionID
 
-        self.shot_map = np.zeros([self.boardHeight, self.boardWidth])
-        self.simple_shot_map = []
-        self.targets = []
-        self.potential_targets = []
+        self.SHOT_MAP = np.zeros([self.boardHeight, self.boardWidth])
+        self.SIMPLE_SHOT_MAP = []
+        self.TARGETS = []
+        self.POTENTIAL_TARGETS = []
+
+        self.save_file(self.sessionID, data)
+
+    # -----------------------------------------------------------------------------------------------------
+    def read_file(self, session_id):
+        data =[]
+        with open("cache/" + session_id + ".json", 'r') as file:
+            data = json.load(file)
+        return data
+
+    def save_file(self, session_id, data):
+        with open("cache/" + session_id + ".json", "w") as outfile:
+            outfile.write(data)
+
+    def shoot(self, session_id, data, max_shots):
+
+        # targets = []
+        # if 'targets' in json_object:
+        #     targets = json_object['targets']
+
+        # potential_targets = []
+        # if 'potential_targets' in json_object:
+        #     potential_targets = json_object['potential_targets']
+
+        # shot_map = np.zeros([json_object['boardWidth'], json_object['boardHeight']])
+        # if 'shot_map' in json_object:
+        #     shot_map = np.array(json_object['shot_map'])
+
+        # simple_shot_map = []
+        # if 'simple_shot_map' in json_object:
+        #     simple_shot_map = json_object['simple_shot_map']
+
+        fire_position = []
+        for i in range(0, max_shots):
+            guess_row, guess_col, potential_targets = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+            fire_position.append([guess_row, guess_col])
+
+            self.SHOT_MAP[guess_row][guess_col] = 1
+            self.SIMPLE_SHOT_MAP.append([guess_row, guess_col])
+
+        data['simple_shot_map'] = self.SIMPLE_SHOT_MAP
+        data['shot_map'] = self.SHOT_MAP.tolist()
+        data['targets'] = self.TARGETS
+        data['potential_targets'] = self.POTENTIAL_TARGETS
+
+        save_file(session_id, json.dumps(data))
+
+        return fire_position
+
+    def notify(self, session_id, data):
+        json_object = read_file(session_id)
+        shot_map = np.array(json_object['shot_map'])
+        targets = np.array(json_object['targets'])
+        potential_targets = json_object['potential_targets']
+     
+        if data['shots']['status'] == "HIT":
+            is_sunk = False
+            if len(data['sunkShips']) > 0:
+                is_sunk = True
+            
+            guess_row = data['shots']['coordinate'][0]
+            guess_col = data['shots']['coordinate'][1]
+            
+            self.TARGETS, self.POTENTIAL_TARGETS = BOT.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+        elif data['shots']['status'] == "MISS":
+            self.POTENTIAL_TARGETS = BOT.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+
+        json_object['targets'] = self.TARGETS
+        json_object['potential_targets'] = self.POTENTIAL_TARGETS
+        save_file(session_id, json.dumps(json_object))
+
+    def game_over(self, session_id, data):
+        save_file(session_id + "_game_over", data)
 
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
