@@ -56,7 +56,7 @@ class Bot:
         data['targets'] = self.TARGETS
         data['potential_targets'] = self.POTENTIAL_TARGETS
 
-        save_file(session_id, json.dumps(data))
+        self.save_file(session_id, json.dumps(data))
 
         return fire_position
 
@@ -80,10 +80,10 @@ class Bot:
 
         json_object['targets'] = self.TARGETS
         json_object['potential_targets'] = self.POTENTIAL_TARGETS
-        save_file(session_id, json.dumps(json_object))
+        self.save_file(session_id, json.dumps(json_object))
 
     def game_over(self, session_id, data):
-        save_file(session_id + "_game_over", data)
+        self.save_file(session_id + "_game_over", data)
 
     # -----------------------------------------------------------------------------------------------------
     def guess_random(self, shot_map):
