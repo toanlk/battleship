@@ -79,13 +79,16 @@ class Bot:
      
         if data['shots'][0]['status'] == "HIT":
             is_sunk = False
+            sunk_ships = []
             if len(data['sunkShips']) > 0:
                 is_sunk = True
+                for ship in data['sunkShips']:
+                    sunk_ships.extend(ship['coordinates'])
             
             guess_row = data['shots'][0]['coordinate'][0]
             guess_col = data['shots'][0]['coordinate'][1]
             
-            self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, data['sunkShips']['coordinates'], self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
+            self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships, self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
         elif data['shots'][0]['status'] == "MISS":
             self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
 
