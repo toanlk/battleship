@@ -1,9 +1,12 @@
 import json
 import random
+import sys
 
 class Position:
     
     def __init__(self, ships):
+        self.boardHeight = 20
+        self.boardWidth = 8
         self.ships = ships
         self.ship_type = {
             "CV": 4, # Carrier
@@ -13,39 +16,36 @@ class Position:
             "DD": 2, # Destroyer
         }
         self.positions = []
-        self.all_position = []
+        self.filter_positions = []
 
     # -----------------------------------------------------------------------------------------------------
     def generate(self):
         for ship in self.ships:
             for i in range(0, ship['quantity']):
                 # print(ship['type'] + ': ' + str(ship['quantity']))
-                position = self.generate_position(ship['type'])
-                self.positions.append({'coordinates': position, 'type': ship['type']})
-                self.all_position.extend(position)
+                is_exist = False
+                while not is_exist:
+                    size = self.ship_type.get(ship['type'], [])
+                    position = self.generate_position_randomly(size, ship['type'])
+
+                    # print(position)
+                    # print(self.filter_positions)
+                    # print('----')
+                    if not self.is_ship_exist(position):
+                        is_exist = True
+                        self.positions.append({'coordinates': position, 'type': ship['type']})
+                        self.filter_positions.extend(position)
+                    else:
+                        continue
 
         return self.positions
 
     # -----------------------------------------------------------------------------------------------------
-    def generate_position(self, ship_type):
-        positions = []
-        is_exist = False
-        size = self.ship_type.get(ship_type, [])
-        
-        while not is_exist:
-            positions = self.generate_position_randomly(size, ship_type)
-            # print(ship_type + ": " + str(positions))
-            if not self.is_ship_exist(positions):
-                is_exist = True
-            else:
-                continue
-
-        return positions
-
     def is_ship_exist(self, positions):
         is_exist = False
+        filter_position = self.get_filter_position()
         for pos in positions:
-            if pos in self.all_position:
+            if pos in self.filter_positions:
                 is_exist = True
         return is_exist
 
@@ -56,11 +56,22 @@ class Position:
         row = random.randint(0, 19)
         col = random.randint(0, 7)
 
+        # direction = 1
+        # if direction == 1: # horizontal
+        #     if ship_type == "DD":
+        #         row = random.choice([0, 19])
+        #         col = random.choice([0, 7])
+        # else:
+        #     if ship_type == "DD":
+        #         row = random.choice([0, 19])
+
         if ship_type == "CV":
             row = random.randint(1, 19) 
             col = random.randint(1, 6)
-        # row = 7
-        # col = 19
+        if ship_type == "DD":
+                row = random.choice([0, 19])
+                col = random.choice([0, 7])
+    
         # direction = 1 # fixed direction
         if ship_type == "OR":
             if (direction % 2 != 0) :
@@ -112,3 +123,19 @@ class Position:
                 for i in range(0, size):
                     positions.append([row, col + i])
         return positions
+    
+    # -----------------------------------------------------------------------------------------------------
+    def get_filter_position(self):
+        filter_position = []
+        for target_row, target_col in self.filter_positions:
+            filter_position.extend([(target_row + 1, target_col), (target_row, target_col + 1),
+                            (target_row - 1, target_col), (target_row, target_col - 1)])
+
+        data = []
+        for guess_row, guess_col in filter_position:
+                if (0 <= guess_row < self.boardHeight) and \
+                        (0 <= guess_col < self.boardWidth) and \
+                        ([guess_row, guess_col] not in self.positions):
+                    data.append((guess_row, guess_col))
+
+        return filter_position

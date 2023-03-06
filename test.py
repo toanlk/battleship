@@ -142,9 +142,10 @@ def demo():
     pos = Position(inviteRequest['ships'])
     positions = pos.generate()
 
-    rate, simple_shot_map = play_battleship('target', positions)
+    # rate, simple_shot_map = play_battleship('target', positions)
 
     pprint.pprint(positions)
+    simple_shot_map = []
     map.draw(positions, simple_shot_map)
 
 # -----------------------------------------------------------------------------------------------------

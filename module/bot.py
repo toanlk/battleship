@@ -32,23 +32,6 @@ class Bot:
             outfile.write(data)
 
     def shoot(self, session_id, data, max_shots):
-
-        # targets = []
-        # if 'targets' in json_object:
-        #     targets = json_object['targets']
-
-        # potential_targets = []
-        # if 'potential_targets' in json_object:
-        #     potential_targets = json_object['potential_targets']
-
-        # shot_map = np.zeros([json_object['boardWidth'], json_object['boardHeight']])
-        # if 'shot_map' in json_object:
-        #     shot_map = np.array(json_object['shot_map'])
-
-        # simple_shot_map = []
-        # if 'simple_shot_map' in json_object:
-        #     simple_shot_map = json_object['simple_shot_map']
-
         json_object = self.read_file(session_id)
 
         fire_position = []
@@ -58,13 +41,6 @@ class Bot:
 
             self.SHOT_MAP[guess_row][guess_col] = 1
             self.SIMPLE_SHOT_MAP.append([guess_row, guess_col])
-
-        # json_object['simple_shot_map'] = self.SIMPLE_SHOT_MAP
-        # json_object['shot_map'] = self.SHOT_MAP.tolist()
-        # json_object['targets'] = self.TARGETS
-        # json_object['potential_targets'] = self.POTENTIAL_TARGETS
-
-        # self.save_file(session_id, json.dumps(json_object))
 
         return fire_position
 
