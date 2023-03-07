@@ -2,7 +2,9 @@ import random
 import json
 import numpy as np
 import os
+import logging
 
+logging.basicConfig(filename="log.txt", level=logging.DEBUG)
 
 class Bot:
     def __init__(self, boardWidth=8, boardHeight=20, sessionID=None, data=None):
@@ -40,6 +42,10 @@ class Bot:
 
         fire_position = []
         for i in range(0, max_shots):
+            logging.debug("TARGETS: " + str(self.TARGETS))
+            logging.debug("POTENTIAL_TARGETS: " + str(self.POTENTIAL_TARGETS))
+            logging.debug("SHOT_MAP: " + str(self.SHOT_MAP))
+
             guess_row, guess_col, self.POTENTIAL_TARGETS = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS,
                                                                             self.SHOT_MAP)
             fire_position.append([guess_row, guess_col])
@@ -67,7 +73,7 @@ class Bot:
     def notify(self, session_id, data):
         json_object = self.read_file(session_id)
 
-        print(data)
+        logging.debug("notify: " + str(targets))
 
         if data['playerId'] == 'Double-L-tmp':
 
@@ -160,9 +166,11 @@ class Bot:
         if len(potential_targets) > 0:
             guess_row, guess_col = potential_targets.pop()
             print("Target: " + str([guess_row, guess_col]))
+            logging.debug("Target: " + str([guess_row, guess_col]))
         else:
             guess_row, guess_col = self.guess_random(shot_map)
             print("Hunt: " + str([guess_row, guess_col]))
+            logging.debug("Hunt: " + str([guess_row, guess_col]))
 
         return guess_row, guess_col, potential_targets
 
