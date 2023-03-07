@@ -73,7 +73,7 @@ class Bot:
     def notify(self, session_id, data):
         json_object = self.read_file(session_id)
 
-        logging.debug("notify: " + str(targets))
+        logging.debug("notify: " + str(data))
 
         if data['playerId'] == 'Double-L-tmp':
 
