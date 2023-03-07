@@ -118,7 +118,7 @@ if __name__ == "__main__":
             os.system('clear')
 
             app.run(debug=True)
-            app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+            app.run(host="0.0.0.0", port=8080, debug=False, threaded=True)
     except Exception as err:
         print(err)
         pass
