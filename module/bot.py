@@ -45,6 +45,7 @@ class Bot:
             logging.debug("TARGETS: " + str(self.TARGETS))
             logging.debug("POTENTIAL_TARGETS: " + str(self.POTENTIAL_TARGETS))
             logging.debug("SHOT_MAP: " + str(self.SHOT_MAP))
+            logging.debug("SIMPLE_SHOT_MAP: " + str(self.SIMPLE_SHOT_MAP))
 
             guess_row, guess_col, self.POTENTIAL_TARGETS = self.hunt_target(self.TARGETS, self.POTENTIAL_TARGETS,
                                                                             self.SHOT_MAP)
@@ -75,37 +76,37 @@ class Bot:
 
         logging.debug("notify: " + str(data))
 
-        if data['playerId'] == 'Double-L-tmp':
+        # if data['playerId'] == 'Double-L-tmp':
+        shot_map = np.array(json_object['shot_map'])
+        targets = np.array(json_object['targets'])
+        potential_targets = json_object['potential_targets']
 
-            shot_map = np.array(json_object['shot_map'])
-            targets = np.array(json_object['targets'])
-            potential_targets = json_object['potential_targets']
+        if data['shots'][0]['status'] == "HIT":
+            is_sunk = False
+            sunk_ships = []
+            guess_row = data['shots'][0]['coordinate'][0]
+            guess_col = data['shots'][0]['coordinate'][1]
 
-            if data['shots'][0]['status'] == "HIT":
-                is_sunk = False
-                sunk_ships = []
-                guess_row = data['shots'][0]['coordinate'][0]
-                guess_col = data['shots'][0]['coordinate'][1]
+            self.SHOT_MAP[guess_row][guess_col] = 1
 
-                self.SHOT_MAP[guess_row][guess_col] = 1
+            if len(data['sunkShips']) > 0:
+                is_sunk = True
+                for ship in data['sunkShips']:
+                    sunk_ships.extend(ship['coordinates'])
+                    for c in ship['coordinates']:
+                        self.SHOT_MAP[c[0]][c[1]] = 2
 
-                if len(data['sunkShips']) > 0:
-                    is_sunk = True
-                    for ship in data['sunkShips']:
-                        sunk_ships.extend(ship['coordinates'])
-                        for c in ship['coordinates']:
-                            self.SHOT_MAP[c[0]][c[1]] = 2
+            self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
+                                                                    self.TARGETS, self.POTENTIAL_TARGETS,
+                                                                    self.SHOT_MAP)
+        elif data['shots'][0]['status'] == "MISS":
+            self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
 
-                self.TARGETS, self.POTENTIAL_TARGETS = self.target_hit(guess_row, guess_col, is_sunk, sunk_ships,
-                                                                       self.TARGETS, self.POTENTIAL_TARGETS,
-                                                                       self.SHOT_MAP)
-            elif data['shots'][0]['status'] == "MISS":
-                self.POTENTIAL_TARGETS = self.target_miss(self.TARGETS, self.POTENTIAL_TARGETS, self.SHOT_MAP)
-
-            json_object['targets'] = self.TARGETS
-            json_object['shot_map'] = self.SHOT_MAP.tolist()
-            json_object['potential_targets'] = self.POTENTIAL_TARGETS
-            self.save_file(session_id, json.dumps(json_object))
+        json_object['targets'] = self.TARGETS
+        json_object['shot_map'] = self.SHOT_MAP.tolist()
+        json_object['potential_targets'] = self.POTENTIAL_TARGETS
+        self.save_file(session_id, json.dumps(json_object))
+            
 
     def game_over(self, session_id, data):
         self.save_file(session_id + "_game_over", json.dumps(data))
